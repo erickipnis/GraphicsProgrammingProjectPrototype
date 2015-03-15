@@ -6,10 +6,9 @@ public class ManagerScript : MonoBehaviour {
 
 	// Use this for initialization
 	public GameObject ship;
+	public GameObject node;
 
-	Vector3 mousePos;
-
-	List<Vector3> grid;
+	List<NodeScript> grid;
 
 	public Material lineMaterial;
 
@@ -18,45 +17,67 @@ public class ManagerScript : MonoBehaviour {
 	const float GRID_SIZE = 2.0f;
 	const float GRID_TOP = -2.5f;
 	const float GRID_LEFT = -5.5f;
+	const float GRID_ABOVE = -1.4f;
+
+	private GameObject testShip;
 
 	void Start () {
 
-		grid = new List<Vector3>();
+		grid = new List<NodeScript>();
 		// set up the grid
 		for(int i = 0; i < GRID_HEIGHT; i++)
 		{
-			CreateLine(new Vector3(i * GRID_SIZE + GRID_TOP, 3.0f, GRID_LEFT),
-			           new Vector3(i * GRID_SIZE + GRID_TOP, 3.0f, GRID_LEFT + GRID_WIDTH * GRID_SIZE));
+			CreateLine(new Vector3(i * GRID_SIZE + GRID_TOP, GRID_ABOVE, GRID_LEFT),
+			           new Vector3(i * GRID_SIZE + GRID_TOP, GRID_ABOVE, GRID_LEFT + GRID_WIDTH * GRID_SIZE));
 			
 			for(int j = 0; j < GRID_WIDTH;j++)
 			{
 				if(i == 0)
 				{
-					CreateLine(new Vector3(GRID_TOP, 3.0f, j * GRID_SIZE + GRID_LEFT), 
-					           new Vector3(GRID_TOP + GRID_SIZE * GRID_HEIGHT, 3.0f, j * GRID_SIZE + GRID_LEFT));
+					CreateLine(new Vector3(GRID_TOP, GRID_ABOVE, j * GRID_SIZE + GRID_LEFT), 
+					           new Vector3(GRID_TOP + GRID_SIZE * GRID_HEIGHT, GRID_ABOVE, j * GRID_SIZE + GRID_LEFT));
 				}
 
-				grid.Add(new Vector3(GRID_TOP + i * GRID_SIZE + GRID_SIZE/2.0f, 0.0f, GRID_LEFT + j * GRID_SIZE + GRID_SIZE/2.0f)); 
+				GameObject n = (GameObject)GameObject.Instantiate(node,
+				                                                  new Vector3(GRID_TOP + i * GRID_SIZE + GRID_SIZE/2.0f, -1.6f, GRID_LEFT + j * GRID_SIZE + GRID_SIZE/2.0f), 
+				                                                  Quaternion.identity);
+				grid.Add(n.GetComponent<NodeScript>()); 
 			}
 		}
 
-		CreateLine(new Vector3(GRID_HEIGHT * GRID_SIZE + GRID_TOP, 3.0f, GRID_LEFT), 
-		           new Vector3(GRID_HEIGHT * GRID_SIZE + GRID_TOP, 3.0f, GRID_LEFT + GRID_WIDTH * GRID_SIZE));
-		CreateLine(new Vector3(GRID_TOP, 3.0f, GRID_WIDTH * GRID_SIZE + GRID_LEFT), 
-		           new Vector3(GRID_TOP + GRID_HEIGHT * GRID_SIZE, 3.0f, GRID_WIDTH * GRID_SIZE + GRID_LEFT));
+		CreateLine(new Vector3(GRID_HEIGHT * GRID_SIZE + GRID_TOP, GRID_ABOVE, GRID_LEFT), 
+		           new Vector3(GRID_HEIGHT * GRID_SIZE + GRID_TOP, GRID_ABOVE, GRID_LEFT + GRID_WIDTH * GRID_SIZE));
+		CreateLine(new Vector3(GRID_TOP, GRID_ABOVE, GRID_WIDTH * GRID_SIZE + GRID_LEFT), 
+		           new Vector3(GRID_TOP + GRID_HEIGHT * GRID_SIZE, GRID_ABOVE, GRID_WIDTH * GRID_SIZE + GRID_LEFT));
+
+		testShip = (GameObject)GameObject.Instantiate(ship, Vector3.zero, Quaternion.identity);
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		Vector3 mouse = Input.mousePosition;
+		mouse.z = 16.5f;
+		mouse = Camera.main.ScreenToWorldPoint(mouse);
 
-		for(int i = 0; i< grid.Count;i++)
+		int index = 0;
+		float smallest = 100000;
+		for(int i = 0; i < grid.Count;i++)
 		{
-			Vector3 start = grid[i];
-			start.y = 3.0f;
-			Debug.DrawLine(start, grid[i]);
+			if(Vector3.Distance(mouse, grid[i].Position) < smallest)
+			{
+				index = i;
+				smallest = Vector3.Distance(mouse, grid[i].Position);
+			}
 		}
+
+		// place a ship on an open grid
+		if(Input.GetMouseButtonUp(0) && grid[index].Open)
+		{
+			grid[index].Open = false;
+			GameObject.Instantiate(ship, grid[index].Position, Quaternion.identity);
+		}
+		testShip.transform.position = grid[index].Position;
 	}
 
 	private void CreateLine(Vector3 start, Vector3 end)
@@ -70,5 +91,6 @@ public class ManagerScript : MonoBehaviour {
 		line.SetColors(Color.black, Color.black);
 		line.SetPosition(0, start);
 		line.SetPosition(1, end);
+		line.gameObject.layer = 5;
 	}
 }

@@ -1405,8 +1405,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be3be767eae2e12498f9672d23e3ca20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ship: {fileID: 0}
-  lineMaterial: {fileID: 2100000, guid: 7efbf6e3825ab344abe4b20332c43bd4, type: 2}
+  ship: {fileID: 167894, guid: 30ac99f0480fdec4691dc30169327aec, type: 2}
+  lineMaterial: {fileID: 2100000, guid: 7d826989b2167a341931406b64d4dd9b, type: 2}
 --- !u!4 &1341859492
 Transform:
   m_ObjectHideFlags: 0
