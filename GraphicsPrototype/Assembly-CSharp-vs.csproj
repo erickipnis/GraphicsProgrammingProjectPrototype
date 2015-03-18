@@ -46,7 +46,13 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\CannonballScript.cs" />
+     <Compile Include="Assets\Scripts\EnemyScript.cs" />
+     <Compile Include="Assets\Scripts\GUIScript.cs" />
+     <Compile Include="Assets\Scripts\GathererScript.cs" />
      <Compile Include="Assets\Scripts\ManagerScript.cs" />
+     <Compile Include="Assets\Scripts\NodeScript.cs" />
+     <Compile Include="Assets\Scripts\ShipScript.cs" />
      <None Include="Assets\Standard Assets\Water (Basic)\Sources\Shaders\FX-Water Simple.shader" />
   </ItemGroup>
   <ItemGroup>
